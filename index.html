@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <output id="errors"></output>
+    </header>
+
+    <main>
+        <button id="read">Read</button>
+        <button id="write">Write</button>
+        <output id="output"></output>
+
+        <button id="share">Share</button>
+    </main>
+
+    <footer></footer>
+    <script>
+        let errors = document.querySelector('#errors');
+        let output = document.getElementById('output');
+
+        document.getElementById('read').addEventListener('click', async () => {
+            let text = await navigator.clipboard.readText();
+            console.log(text);
+            output.innerText = text;
+        });
+
+        document.getElementById('write').addEventListener('click', () => {
+            navigator.clipboard.writeText("The quick brown fox jumps over the lazy dog.")
+            .then(() => {
+                console.log("Data written successfully.");
+            })
+            .catch((err) => {
+                console.log(err);
+                errors.innerHTML = err.message
+            })
+        })
+
+        errors.innerHTML = navigator.connection.effectiveType;
+        navigator.connection.onchange = (e) => {}
+
+        document.querySelector('#share').addEventListener('click', () => {
+            if (navigator.canShare()) {
+                navigator.share({
+                    // files: [],
+                    text: 'ShareDate Text Body',
+                    title: 'ShareDate Title',
+                    url: 'http://127.0.0.1:5500/index.html'
+                }).catch((err) => {
+                    errors.innerHTML = err.message;
+                })
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', (e) => {
+            // Battery Info
+            navigator.getBattery()
+            .then((battery) => {
+                console.log(battery.level);
+            })
+            .catch((err) => {
+                errors.innerHTML = err.message;
+            });
+        });
+    </script>
+</body>
+
+</html>
